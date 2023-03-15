@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,10 @@ Auth::routes();
 // admin route
 Route::group(['middleware' => 'is_admin','prefix'=>"admin"], function () {
     Route::get('home', [AdminController::class, 'index'])->name('admin.home');
+    Route::get('getsubcategory', [ServiceController::class, 'getsubcategory'])->name('admin.service.subcategory');
     Route::resource('category', CategoryController::class);
+    Route::resource('service', ServiceController::class);
+
 
 
 });

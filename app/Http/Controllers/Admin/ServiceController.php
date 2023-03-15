@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
-
-class CategoryController extends Controller
+use App\Models\Service;
+class ServiceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +15,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-
-        $categories= Category::get();
+        $services= Service::get();
         $count=0;
-        return view('admin.category.index',compact('categories','count'));
+        return view('admin.service.index',compact('services','count'));
     }
 
     /**
@@ -28,8 +27,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-       $parentcategories= Category::where('is_parent',1)->get();
-  return view('admin.category.create',compact('parentcategories'));
+        $parentcategories= Category::where('is_parent',1)->get();
+        return view('admin.service.create',compact('parentcategories'));
     }
 
     /**
@@ -40,14 +39,11 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-     $data=$request->all();
-     if($request->hasFile('image')){
-        $imageName = time().'.'.$request->image->extension();
-        $request->image->move(public_path('assets/frontend/images'), $imageName);
-        $data['image']=$imageName;
+        $data=$request->all();
 
-     }
-     Category::create($data);
+
+$data['image']=imageupload($request->image);
+        Service::create($data);
     }
 
     /**
@@ -69,7 +65,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        $data= Category::where('id',$id)->first();
+        $data= Service::where('id',$id)->first();
         $parentcategories= Category::where('is_parent',1)->get();
         return view('admin.category.edit',compact('parentcategories','data'));
     }
@@ -83,17 +79,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $data=$request->all();
-        unset($data['_token']);
-        unset($data['_method']);
-     if($request->hasFile('image')){
-        $imageName = time().'.'.$request->image->extension();
-        $request->image->move(public_path('assets/frontend/images'), $imageName);
-        $data['image']=$imageName;
-
-     }
-     Category::whereId($id)->update($data);
+        //
     }
 
     /**
@@ -104,10 +90,18 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-
-        $category = Category::find($id);
-
-        $category->delete();
-
+        //
     }
+
+    function getsubcategory(Request $request){
+
+$subcategory= Category::where('parent_id',$request->id)->get();
+
+foreach($subcategory as $sub){
+    echo "<option value='$sub->id'>$sub->category</option>";
+}
+
+
+
+}
 }

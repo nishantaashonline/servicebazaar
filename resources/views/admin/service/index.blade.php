@@ -6,13 +6,17 @@
         <h3>Category list</h3>
         <a href="{{route('category.create')}}" class="btn btn-primary">Create Category</a>
     </div>
-<table class="table">
+<table class="table"  id="example">
     <thead>
       <tr>
         <th scope="col">#</th>
         <th scope="col">Image</th>
-        <th scope="col">Sub Category</th>
-        <th scope="col">Parent Category</th>
+        <th scope="col">Service Name</th>
+        <th scope="col">Regular Price</th>
+        <th scope="col">Price</th>
+
+        <th scope="col">Category</th>
+        <th scope="col">Short Description</th>
         <th scope="col">Action</th>
 
 
@@ -20,26 +24,29 @@
     </thead>
     <tbody>
 
-        @foreach ($categories as $category)
+        @foreach ($services as $service)
         @php
        $count=$count+1;
     @endphp
         <tr>
             <th scope="row">{{$count}}</th>
-            <td><img src="{{asset('assets/frontend/images/'.$category->image)}}" class="img-thumbnail image-50"></td>
-            <td>{{$category->category}}</td>
-            @if($category->parent_id!=0)
+            <td><img src="{{asset('assets/frontend/images/'.$service->image)}}" class="img-thumbnail image-50"></td>
+            <td>{{$service->service_name}}</td>
+            <td>{{$service->ragular_price}}</td>
+            <td>{{$service->price}}</td>
+            @if($service->category_id!=0)
             @php
-                $parentcategory=DB::table('categories')->where('id',$category->parent_id)->first();
+                $category=DB::table('categories')->where('id',$service->category_id)->first();
             @endphp
-                <td>{{$parentcategory->category}}</td>
+                <td>{{$category->category}}</td>
                 @else
                 <td>No</td>
             @endif
+            <td>{!!$service->short_desc!!}</td>
             <td>
                <div class="d-flex">
-                <a href="{{route('category.edit',$category->id)}}" class="btn btn-success">Edit</a>
-                <form action="{{route('category.destroy',$category->id)}}" method="POST">
+                <a href="{{route('service.edit',$service->id)}}" class="btn btn-success">Edit</a>
+                <form action="{{route('service.destroy',$service->id)}}" method="POST">
                     @csrf
 
                     @method('DELETE')
